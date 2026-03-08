@@ -1,15 +1,19 @@
-import pandas as pd
-import os
+#!/usr/bin/env python3
 
-from models.models import OptionTrade
+from portfolio.fx_portfolio import FXPortfolio
+import argparse
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
 
-INPUT_DATA_PATH = "/home/josh/coding/validus_takehome/src/tests/data/input_data"
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="FX Options Portfolio Risk Aggregator")
+    parser.add_argument("--input", required=True, help="Path to input xlsx file")
+    parser.add_argument("--output", required=True, help="Path to output xlsx file")
+    args = parser.parse_args()
 
-
-input_file = os.path.join(INPUT_DATA_PATH, "fx_trades__1_.xlsx")
-
-df = pd.read_excel(input_file, header=0, engine="calamine")
-
-
-trades = [OptionTrade(**r) for r in df.to_dict("records")] # pyright: ignore[reportCallIssue]
+    fx_portfolio = FXPortfolio()
+    fx_portfolio.generate_fx_portfolio(args.input, args.output)
